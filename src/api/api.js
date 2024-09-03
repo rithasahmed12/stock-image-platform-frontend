@@ -19,9 +19,9 @@ export const login = async(body)=>{
     }
 }
 
-export const getImages = async()=>{
+export const getImages = async(id)=>{
     try {
-        const response = await Api.get('/images');
+        const response = await Api.get(`/images/${id}`);
         console.log('response:',response);
         return response.data;
     } catch (error) {

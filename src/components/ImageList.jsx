@@ -10,6 +10,7 @@ import {
   deleteImages,
   // updateImagesOrder,
 } from "../api/api";
+import { useSelector } from "react-redux";
 
 const { Dragger } = Upload;
 
@@ -24,6 +25,8 @@ const ImageList = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const {userInfo} = useSelector((state)=> state.auth);
+
   useEffect(() => {
     fetchImages();
   }, []);
@@ -31,7 +34,7 @@ const ImageList = () => {
   const fetchImages = async () => {
     setIsLoading(true);
     try {
-      const fetchedImages = await getImages();
+      const fetchedImages = await getImages(userInfo.user._id);
       console.log("Fetched images:", fetchedImages); // Log fetched images
       // Ensure each image has a unique ID
       const imagesWithIds = fetchedImages.map((img, index) => ({
@@ -62,6 +65,7 @@ const ImageList = () => {
         formData.append(`images`, image.originFileObj);
         formData.append(`titles[${index}]`, image.title || '');
         formData.append(`orders[${index}]`, images.length + index);
+        formData.append('id',userInfo.user._id)
       });
   
       await uploadImages(formData);
